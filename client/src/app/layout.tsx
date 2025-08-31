@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import {  Geist_Mono, Roboto } from "next/font/google";
+import { Geist_Mono, Roboto } from "next/font/google";
+import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
+import Header from "@/components/header";
+import { Toaster } from "@/components/ui/sonner"
 
 const roboto = Roboto({
   variable: "--font-roboto",
-  subsets: ["vietnamese","latin"],
+  subsets: ["vietnamese", "latin"],
 });
 
 const geistMono = Geist_Mono({
@@ -23,14 +26,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <head>
-      
-      </head>
-      <body
-        className={`${roboto.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+    <html lang="en" className="mdl-js" suppressHydrationWarning>
+      <head />
+      <body className={`${roboto.variable} ${geistMono.variable} antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Header />
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );
