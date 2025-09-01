@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
 // import { z } from "zod";
 import { RegisterBody, RegisterBodyType } from "@/schemaValidations/auth.schema";
+// import { th } from "zod/v4/locales";
 // const formSchema = z.object({
 //   username: z.string().min(2).max(50),
 // });
@@ -32,23 +33,26 @@ export default function RegisterForm() {
 
   async function onSubmit(values: RegisterBodyType) {
     // console.log(values);
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}auth/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      // throw new Error("Đăng ký thất bại");
-      const errorMsg = data.errors?.[0]?.message || data.message || "Đăng ký thất bại!";
-      toast.warning(errorMsg);
-      return;
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.log(data.message);
+        toast.error("Đăng ký thất bại! " + data.errors[0].message);
+        form.setError(data.errors[0].field, { message: data.errors[0].message });
+      }else{
+        toast.success(data.message);
+      }
+    } catch (error : any) {
+      toast.error("Đăng ký thất bại! " + error.message);
     }
-    toast.success("Đăng ký thành công!");
   }
-
   return (
     <div>
 
